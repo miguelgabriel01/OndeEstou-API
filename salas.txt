@@ -1,0 +1,6 @@
+{"abreviado":"Abreviacao","nomeCompleto":"NomeSala","horarioFuncionamento":"Horario","diaFuncionamento":"Dia","responsavel":"Responsavel","descricao":"Descricao"}
+{"id":null,"abreviado":"Abreviacao","nomeCompleto":"NomeSala","horarioFuncionamento":"Horario","diaFuncionamento":"Dia","responsavel":"Responsavel","descricao":"Descricao"}
+{"id":1,"abreviado":"Abreviacao","nomeCompleto":"NomeSala","horarioFuncionamento":"Horario","diaFuncionamento":"Dia","responsavel":"Responsavel","descricao":"Descricao"}
+{"id":2,"abreviado":"Abreviacao","nomeCompleto":"NomeSala","horarioFuncionamento":"Horario","diaFuncionamento":"Dia","responsavel":"Responsavel","descricao":"Descricao"}
+{"id":3,"abreviado":"Abreviacao","nomeCompleto":"NomeSala","horarioFuncionamento":"Horario","diaFuncionamento":"Dia","responsavel":"Responsavel","descricao":"Descricao"}
+{"id":4,"abreviado":"miguelito 222","nomeCompleto":"miguel","horarioFuncionamento":"NovoHorario","diaFuncionamento":"NovoDia","responsavel":"NovoResponsavel","descricao":"NovaDescricao"}

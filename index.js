@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,202 +44,101 @@ function autenticarToken(req, res, next) {
   });
 }
 
-
-//JSON com as informações da sala
-const salas = [
-    {
-      "abreviado": "Biblioteca",
-      "nomeCompleto": "Biblioteca",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "João Silva",
-      "descricao": "Local destinado ao empréstimo de livros e estudos."
-    },
-    {
-      "abreviado": "Cradt",
-      "nomeCompleto": "Centro de Referência em Artes Digitais e Tecnologia",
-      "horarioFuncionamento": "9:00 - 20:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Maria Santos",
-      "descricao": "Espaço dedicado ao desenvolvimento de projetos artísticos e tecnológicos."
-    },
-    {
-      "abreviado": "Lab01",
-      "nomeCompleto": "Laboratório 01",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Sábado",
-      "responsavel": "Pedro Oliveira",
-      "descricao": "Laboratório equipado para realização de experimentos e pesquisas."
-    },
-    {
-      "abreviado": "Lab02",
-      "nomeCompleto": "Laboratório 02",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Sábado",
-      "responsavel": "Ana Souza",
-      "descricao": "Laboratório equipado para realização de experimentos e pesquisas."
-    },
-    {
-      "abreviado": "Lab03",
-      "nomeCompleto": "Laboratório 03",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Sábado",
-      "responsavel": "Carlos Rodrigues",
-      "descricao": "Laboratório equipado para realização de experimentos e pesquisas."
-    },
-    {
-      "abreviado": "Lab04",
-      "nomeCompleto": "Laboratório 04",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Sábado",
-      "responsavel": "Mariana Almeida",
-      "descricao": "Laboratório equipado para realização de experimentos e pesquisas."
-    },
-    {
-      "abreviado": "Lab05",
-      "nomeCompleto": "Laboratório 05",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Sábado",
-      "responsavel": "José Santos",
-      "descricao": "Laboratório equipado para realização de experimentos e pesquisas."
-    },
-    {
-      "abreviado": "SalaB02",
-      "nomeCompleto": "Sala B02",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Maria Oliveira",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "SalaB03",
-      "nomeCompleto": "Sala B03",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Carlos Silva",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "SalaB04",
-      "nomeCompleto": "Sala B04",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Ana Rodrigues",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "SalaB05",
-      "nomeCompleto": "Sala B05",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Pedro Almeida",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "SalaB06",
-      "nomeCompleto": "Sala B06",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Mariana Santos",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "SalaB07",
-      "nomeCompleto": "Sala B07",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "José Oliveira",
-      "descricao": "Sala de aula para turmas do curso B."
-    },
-    {
-      "abreviado": "Auditorio",
-      "nomeCompleto": "Auditório",
-      "horarioFuncionamento": "8:00 - 22:00",
-      "diaFuncionamento": "Segunda a Domingo",
-      "responsavel": "Fernanda Silva",
-      "descricao": "Espaço destinado a apresentações e eventos."
-    },
-    {
-      "abreviado": "BanheiroM",
-      "nomeCompleto": "Banheiro Masculino",
-      "horarioFuncionamento": "24 horas",
-      "diaFuncionamento": "Todos os dias",
-      "responsavel": "Não aplicável",
-      "descricao": "Banheiro masculino para uso público."
-    },
-    {
-      "abreviado": "BanheiroF",
-      "nomeCompleto": "Banheiro Feminino",
-      "horarioFuncionamento": "24 horas",
-      "diaFuncionamento": "Todos os dias",
-      "responsavel": "Não aplicável",
-      "descricao": "Banheiro feminino para uso público."
-    },
-    {
-      "abreviado": "Refeitorio",
-      "nomeCompleto": "Refeitório",
-      "horarioFuncionamento": "11:00 - 14:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Maria Santos",
-      "descricao": "Local para refeições e alimentação dos estudantes."
-    },
-    {
-      "abreviado": "Lanchonete",
-      "nomeCompleto": "Lanchonete",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Carlos Oliveira",
-      "descricao": "Lanchonete que oferece opções de lanches e bebidas."
-    },
-    {
-      "abreviado": "Copa",
-      "nomeCompleto": "Copa",
-      "horarioFuncionamento": "8:00 - 18:00",
-      "diaFuncionamento": "Segunda a Sexta",
-      "responsavel": "Carlos Oliveira",
-      "descricao": "Espaço para preparo de alimentos e descanso dos funcionários."
-    }
-  ]
-
 // Rota para listar todas as salas
 app.get('/salas', (req, res) => {
+  const fs = require('fs');
+  fs.readFile('salas.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo de texto:', err);
+      res.status(500).json({
+        mensagem: 'Erro ao buscar as salas'
+      });
+      return;
+    }
+
+    const salas = data.split('\n').filter(sala => sala.trim() !== '').map(sala => JSON.parse(sala));
     res.json(salas);
+  });
 });
 
 // Rota para obter os dados de uma sala específica pelo nome completo
-app.get('/salas/:nome', (req, res) => {
-    const nomeSala = req.params.nome;
-    const sala = salas.find(s => s.nomeCompleto === nomeSala);
-    if (sala) {
+app.get('/salas/:id', (req, res) => {
+  const idSala = parseInt(req.params.id);
+
+  fs.readFile('salas.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo de texto:', err);
+      res.status(500).json({
+        mensagem: 'Erro ao obter os dados da sala'
+      });
+      return;
+    }
+
+    let salas = data.split('\n').filter(sala => sala.trim() !== '');
+    let salaEncontrada = false;
+    let sala = null;
+
+    // Procura a sala pelo ID
+    for (let i = 0; i < salas.length; i++) {
+      const salaAtual = JSON.parse(salas[i]);
+      if (salaAtual.id === idSala) {
+        sala = salaAtual;
+        salaEncontrada = true;
+        break;
+      }
+    }
+
+    if (salaEncontrada) {
       res.json(sala);
     } else {
       res.status(404).json({ mensagem: 'Sala não encontrada' });
     }
-});  
+  });
+});
 
-//Rota que vai listar todas as salas
-app.post('/salas',autenticarToken, (req, res) => {
-    const novaSala = req.body;
-  
-    console.log("valor do request: " , novaSala)
-    // Verifica se todos os campos obrigatórios estão presentes e não estão vazios
-    if (
-      novaSala &&
-      novaSala.abreviado &&
-      novaSala.nomeCompleto &&
-      novaSala.horarioFuncionamento &&
-      novaSala.diaFuncionamento &&
-      novaSala.responsavel &&
-      novaSala.descricao &&
-      novaSala.abreviado.trim() !== '' &&
-      novaSala.nomeCompleto.trim() !== '' &&
-      novaSala.horarioFuncionamento.trim() !== '' &&
-      novaSala.diaFuncionamento.trim() !== '' &&
-      novaSala.responsavel.trim() !== '' &&
-      novaSala.descricao.trim() !== ''
-    ) {
-      // Salva os dados informados em um objeto
+//rota para cadastrar uma sala
+app.post('/salas', autenticarToken, (req, res) => {
+  const novaSala = req.body;
+
+  console.log("valor do request: ", novaSala);
+
+  // Verifica se todos os campos obrigatórios estão presentes e não estão vazios
+  if (
+    novaSala &&
+    novaSala.abreviado &&
+    novaSala.nomeCompleto &&
+    novaSala.horarioFuncionamento &&
+    novaSala.diaFuncionamento &&
+    novaSala.responsavel &&
+    novaSala.descricao &&
+    novaSala.abreviado.trim() !== '' &&
+    novaSala.nomeCompleto.trim() !== '' &&
+    novaSala.horarioFuncionamento.trim() !== '' &&
+    novaSala.diaFuncionamento.trim() !== '' &&
+    novaSala.responsavel.trim() !== '' &&
+    novaSala.descricao.trim() !== ''
+  ) {
+    // Lê o arquivo de texto para obter o último ID salvo
+    const fs = require('fs');
+    fs.readFile('salas.txt', 'utf8', (err, data) => {
+      if (err) {
+        console.error('Erro ao ler o arquivo de texto:', err);
+        res.status(500).json({
+          mensagem: 'Erro ao salvar os dados'
+        });
+        return;
+      }
+
+      let id = 1; // ID inicial
+      if (data) {
+        const salas = data.split('\n');
+        const ultimaSala = JSON.parse(salas[salas.length - 2]);
+        id = ultimaSala.id + 1; // Incrementa o ID
+      }
+
+      // Salva os dados informados em um objeto, incluindo o ID
       const dadosSalvos = {
+        id: id,
         abreviado: novaSala.abreviado,
         nomeCompleto: novaSala.nomeCompleto,
         horarioFuncionamento: novaSala.horarioFuncionamento,
@@ -246,80 +146,157 @@ app.post('/salas',autenticarToken, (req, res) => {
         responsavel: novaSala.responsavel,
         descricao: novaSala.descricao
       };
-  
+
+      // Verifica se o ID já existe no arquivo
+      if (data.includes(`"id":${id}`)) {
+        res.status(400).json({
+          mensagem: 'Erro: ID já existe'
+        });
+        return;
+      }
+
       // Exibe uma mensagem de sucesso com os dados salvos
       res.status(200).json({
         mensagem: 'Dados salvos com sucesso',
         dadosSalvos
       });
-    } else {
-      // Caso algum campo obrigatório esteja faltando ou vazio
-      res.status(400).json({
-        mensagem: 'Erro: Campos obrigatórios faltando ou inválidos'
-      });
-    }
-  });
 
-  app.put('/salas/:nomeCompleto', autenticarToken,(req, res) => {
-    const nomeCompleto = req.params.nomeCompleto;
-    const salaAtualizada = req.body;
-  
-    // Verificar se a sala existe com base no nomeCompleto
-    const salaExistenteIndex = salas.findIndex(sala => sala.nomeCompleto === nomeCompleto);
-    if (salaExistenteIndex === -1) {
-      return res.status(404).json({ mensagem: 'Sala não encontrada.' });
-    }
-  
-    // Validar os campos obrigatórios da sala atualizada
-    if (
-      !salaAtualizada.abreviado ||
-      !salaAtualizada.nomeCompleto ||
-      !salaAtualizada.horarioFuncionamento ||
-      !salaAtualizada.diaFuncionamento ||
-      !salaAtualizada.responsavel ||
-      !salaAtualizada.descricao ||
-      salaAtualizada.abreviado.trim() === '' ||
-      salaAtualizada.nomeCompleto.trim() === '' ||
-      salaAtualizada.horarioFuncionamento.trim() === '' ||
-      salaAtualizada.diaFuncionamento.trim() === '' ||
-      salaAtualizada.responsavel.trim() === '' ||
-      salaAtualizada.descricao.trim() === ''
-    ) {
-      return res.status(400).json({ mensagem: 'Erro: Campos obrigatórios faltando ou inválidos' });
-    }
-  
-    // Atualizar os valores da sala existente
-    salas[salaExistenteIndex] = { ...salas[salaExistenteIndex], ...salaAtualizada };
-  
-    // Retornar uma mensagem de sucesso com os dados atualizados
-    res.status(200).json({ mensagem: 'Sala atualizada com sucesso.', sala: salas[salaExistenteIndex] });
+      // Salva os dados em um arquivo de texto
+      fs.appendFile('salas.txt', JSON.stringify(dadosSalvos) + '\n', (err) => {
+        if (err) {
+          console.error('Erro ao salvar os dados no arquivo de texto:', err);
+        } else {
+          console.log('Dados salvos no arquivo de texto.');
+        }
+      });
+    });
+  } else {
+    // Caso algum campo obrigatório esteja faltando ou vazio
+    res.status(400).json({
+      mensagem: 'Erro: Campos obrigatórios faltando ou inválidos'
+    });
+  }
+});
+
+//rota para atualizar uma sala
+app.put('/salas/:id', (req, res) => {
+  const id = req.params.id;
+  const novosValores = req.body;
+
+  // Verifica se todos os campos obrigatórios estão presentes e não estão vazios
+  if (
+    novosValores &&
+    novosValores.abreviado &&
+    novosValores.nomeCompleto &&
+    novosValores.horarioFuncionamento &&
+    novosValores.diaFuncionamento &&
+    novosValores.responsavel &&
+    novosValores.descricao &&
+    novosValores.abreviado.trim() !== '' &&
+    novosValores.nomeCompleto.trim() !== '' &&
+    novosValores.horarioFuncionamento.trim() !== '' &&
+    novosValores.diaFuncionamento.trim() !== '' &&
+    novosValores.responsavel.trim() !== '' &&
+    novosValores.descricao.trim() !== ''
+  ) {
+    const fs = require('fs');
+    fs.readFile('salas.txt', 'utf8', (err, data) => {
+      if (err) {
+        console.error('Erro ao ler o arquivo de texto:', err);
+        res.status(500).json({
+          mensagem: 'Erro ao buscar as salas'
+        });
+        return;
+      }
+
+      let salas = data.split('\n').filter(sala => sala.trim() !== '').map(sala => JSON.parse(sala));
+
+      // Procura a sala com o campo "id" correspondente
+      const salaAtualizar = salas.find(sala => String(sala.id) === String(id));
+
+      if (!salaAtualizar) {
+        res.status(404).json({
+          mensagem: 'Sala não encontrada'
+        });
+        return;
+      }
+
+      // Atualiza os valores da sala
+      salaAtualizar.abreviado = novosValores.abreviado;
+      salaAtualizar.nomeCompleto = novosValores.nomeCompleto;
+      salaAtualizar.horarioFuncionamento = novosValores.horarioFuncionamento;
+      salaAtualizar.diaFuncionamento = novosValores.diaFuncionamento;
+      salaAtualizar.responsavel = novosValores.responsavel;
+      salaAtualizar.descricao = novosValores.descricao;
+
+      // Salva as salas atualizadas no arquivo de texto
+      const salasAtualizadas = salas.map(sala => JSON.stringify(sala)).join('\n');
+      fs.writeFile('salas.txt', salasAtualizadas, 'utf8', (err) => {
+        if (err) {
+          console.error('Erro ao salvar os dados no arquivo de texto:', err);
+          res.status(500).json({
+            mensagem: 'Erro ao atualizar a sala'
+          });
+        } else {
+          res.status(200).json({
+            mensagem: 'Sala atualizada com sucesso',
+            sala: salaAtualizar
+          });
+        }
+      });
+    });
+  } else {
+    res.status(400).json({
+      mensagem: 'Erro: Campos obrigatórios faltando ou inválidos'
+    });
+  }
 });
 
 //rota para deletar uma sala
-app.delete('/salas/:nomeCompleto', autenticarToken,(req, res) => {
-    const nomeCompleto = req.params.nomeCompleto;
-  
-    // Verifica se a sala existe no array
-    const salaIndex = salas.findIndex(sala => sala.nomeCompleto === nomeCompleto);
-  
-    if (salaIndex !== -1) {
-      // Remove a sala do array
-      salas.splice(salaIndex, 1);
-      res.status(200).json({
-        mensagem: 'Sala removida com sucesso'
+app.delete('/salas/:id', autenticarToken, (req, res) => {
+  const idSala = parseInt(req.params.id);
+
+  fs.readFile('salas.txt', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo de texto:', err);
+      res.status(500).json({
+        mensagem: 'Erro ao excluir a sala'
+      });
+      return;
+    }
+
+    let salas = data.split('\n').filter(sala => sala.trim() !== '');
+    let salaEncontrada = false;
+
+    // Procura a sala pelo ID e a remove do array de salas
+    for (let i = 0; i < salas.length; i++) {
+      const sala = JSON.parse(salas[i]);
+      if (sala.id === idSala) {
+        salas.splice(i, 1);
+        salaEncontrada = true;
+        break;
+      }
+    }
+
+    if (salaEncontrada) {
+      // Atualiza o arquivo de texto com as salas restantes
+      const novoConteudo = salas.join('\n');
+      fs.writeFile('salas.txt', novoConteudo, 'utf8', err => {
+        if (err) {
+          console.error('Erro ao escrever o arquivo de texto:', err);
+          res.status(500).json({
+            mensagem: 'Erro ao excluir a sala'
+          });
+          return;
+        }
+        res.json({ mensagem: 'Sala excluída com sucesso' });
       });
     } else {
-      res.status(404).json({
-        mensagem: 'Sala não encontrada'
-      });
+      res.status(404).json({ mensagem: 'Sala não encontrada' });
     }
-})
+  });
+});
 
 //iniciar o servidor 
 const port  = 8081;
-app.listen(port,()=>{
-    console.log("API ONDE-ESTOU");
-    console.log("STATUS: Ativa");
-    console.log("RESPONSAVEL: mgbs@discente.ifpe.edu.br");
-    console.log(`SERVIDOR INICIADO NA PORTA: ${port}`);
-})
+app.listen(process.env.PORT || port);
